@@ -12,7 +12,7 @@ if __name__ == '__main__':
     running = True
     fps = 144
     clock = pygame.time.Clock()
-
+    step = 2
 
     # заставочка
 
@@ -51,29 +51,42 @@ if __name__ == '__main__':
 
 
     start_screen()
+
+    # загрузочный блок 0:
+
+    # бэкграунд
+
+    background_image = pygame.image.load("test background 2.jpg").convert()
+
+    # персонаж
+
+    player_image = pygame.image.load("player.png").convert()
+    player_image.set_colorkey(pygame.Color('white'))
+    pers_x = 25
+    pers_y = 820
+
+    # а тут совмещаем все картинки. ПОРЯДОК ВАЖЕН!!!
+
+    screen.blit(background_image, [0, 0])
+    screen.blit(player_image, [pers_x, pers_y])
+
     while running:
-        # бэкграунд
-
-        background_image = pygame.image.load("test background 2.jpg").convert()
-
-        # прикрепляем перса
-
-        player_position = pygame.mouse.get_pos()
-        x = player_position[0]
-        y = player_position[1]
-        player_image = pygame.image.load("player.png").convert()
-        player_image.set_colorkey(pygame.Color('white'))
-
-        # а тут совмещаем все холсты. ПОРЯДОК ВАЖЕН!!!
-
-        screen.blit(background_image, [0, 0])
-        screen.blit(player_image, [x, y])
-
         # чек ивенты
         for event in pygame.event.get():
             # закрывашка
             if event.type == pygame.QUIT:
                 running = False
+
+        keys = pygame.key.get_pressed()
+
+        # лево-право
+
+        if keys[pygame.K_d]:
+            pers_x += step if pers_x < 1500 else 0
+        if keys[pygame.K_a]:
+            pers_x -= step if 0 < pers_x else 0
+        screen.blit(background_image, [0, 0])
+        screen.blit(player_image, [pers_x, pers_y])
 
         pygame.display.flip()
         clock.tick(fps)
