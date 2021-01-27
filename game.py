@@ -1,5 +1,4 @@
 import pygame
-from pygame import *
 import sys
 
 if __name__ == '__main__':
@@ -14,9 +13,6 @@ if __name__ == '__main__':
     fps = 144
     clock = pygame.time.Clock()
     step = 12
-    PLATFORM_WIDTH = 30
-    PLATFORM_HEIGHT = 30
-    PLATFORM_COLOR = "#FFFFFF"
 
 
     # заставочка
@@ -61,8 +57,6 @@ if __name__ == '__main__':
 
     # бэкграунд
 
-    background_image = pygame.image.load("test background 2.2.jpg").convert()
-
     # персонаж
     i = 0
 
@@ -104,77 +98,111 @@ if __name__ == '__main__':
             screen.blit(self.image, [pers_x, pers_y])
 
 
-    all_sprites = pygame.sprite.Group()
-    player = Violet()
-    all_sprites.add(player)
+    # левелы, они же уровни или локации, как хотите
 
-    player_image = Violet()
-    pers_x = 25
-    pers_y = 320
-    level = [
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                                     ---------",
-        "                                     ---------",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                          ",
-        "                                    ",
-        "                              ---   ",
-        "                              ---   ",
-        "---------------------------------   ",
-        "---------------------------------   "]
+    class Window():
+        def __init__(self):
+            self.win = pygame.image.load('win.png')
+            self.tt = pygame.font.SysFont(None, 30)
+            self.text_v = self.tt.render('', False, (250, 250, 250))
 
-    # а тут совмещаем все картинки. ПОРЯДОК ВАЖЕН!!!
+        def vi_talk(self, text=''):
+            self.text_v = self.tt.render(text, False, (250, 250, 250))
 
-    screen.blit(background_image, [0, 0])
+        def uwu(self, poser):
+            if poser == True:
+                screen.blit(self.win, (0, 0))
+                screen.blit(self.text_v, (280, 550))
+            if poser == False:
+                screen.blit(self.win, (0, 300))
+                screen.blit(self.text_v, (280, 850))
 
-    while running:
-        # чек ивенты
-        for event in pygame.event.get():
-            # закрывашка
-            if event.type == pygame.QUIT:
-                running = False
 
-        keys = pygame.key.get_pressed()
+class Levels():
+    def __init__(self, *group):
+        super().__init__(*group)
+        self.background1 = pygame.image.load('test background 2.2.jpg')
+        self.background3 = pygame.image.load('test background 2.jpg')
+        self.background2 = pygame.image.load("background city 1.png").convert()
+        self.platform_im = pygame.image.load('platform 1.png').convert()
+        self.platform_im.set_colorkey(pygame.Color('white'))
+        self.platform_im2 = pygame.image.load('platform 2.png')
+        self.platform_im2.set_colorkey(pygame.Color('white'))
+        self.phone = False
+        #  self.image_phone = pygame.image.load('ph.png')
+        self.wire = False
+        # self.image_wire = pygame.image.load('')
+        self.quest = False
+        self.knife = False
 
-        # лево-право
-        all_sprites.update('simple_stand')
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            pers_x += step if pers_x < 1500 else 0
-            all_sprites.update('walk_right')
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            pers_x -= step if 0 < pers_x else 0
-            all_sprites.update('walk_left')
-        else:
-            all_sprites.update('stand')
+    def lv1(self):
+        screen.blit(self.background1, [0, 0])
 
-        screen.blit(background_image, [0, 0])
+    def lv2(self):
+        screen.blit(self.background2, [0, 0])
+        screen.blit(self.platform_im, [0, 0])
+        screen.blit(self.platform_im2, [300, 150])
 
-        x = y = 0  # координаты
-        for row in level:  # вся строка
-            for col in row:  # каждый символ
-                if col == "-":
-                    # создаем блок, заливаем его цветом и рисеум его
-                    pf = Surface((PLATFORM_WIDTH, PLATFORM_HEIGHT))
-                    pf.fill(Color(PLATFORM_COLOR))
-                    screen.blit(pf, (x, y))
+    def lv3(self):
+        screen.blit(self.background3, [0, 0])
 
-                x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
-            y += PLATFORM_HEIGHT  # то же самое и с высотой
-            x = 0  # на каждой новой строчке начинаем с нуля
-        screen.blit(player.image, [pers_x, pers_y])
-        pygame.display.flip()
-        clock.tick(fps)
+
+lv_li = [1, 2, 3]
+all_sprites = pygame.sprite.Group()
+player = Violet()
+all_sprites.add(player)
+
+player_image = Violet()
+pers_x = 25
+pers_y = 320
+
+loc = Levels()
+di_win = Window()
+k = -1
+pose = ''
+#  реплики 1
+test_text = ['Если бы я только знал, чем это всё кончится...',
+             'Я бы не брал ту шавуху',
+             '']
+# а тут совмещаем все картинки. ПОРЯДОК ВАЖЕН!!!
+
+while running:
+    # чек ивенты
+    for event in pygame.event.get():
+        # закрывашка
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYUP:
+            if event.key in [pygame.K_e]:
+                pose = True
+            elif event.key in [pygame.K_0]:  #  свернуть и развернуть диалоговое окно
+                pose = False
+            if pose:
+                if event.key in [pygame.K_l] and k != len(test_text) - 1:
+                    k += 1
+                elif event.key in [pygame.K_j] and k > 0:  #  переключение между диалогами
+                    k -= 1
+
+    keys = pygame.key.get_pressed()
+
+    # лево-право
+    all_sprites.update('simple_stand')
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        pers_x += step if pers_x < 1500 else 0
+        all_sprites.update('walk_right')
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        pers_x -= step if 0 < pers_x else 0
+        all_sprites.update('walk_left')
+    else:
+        all_sprites.update('stand')
+
+    loc.lv2()
+    screen.blit(player.image, [pers_x, pers_y])
+    di_win.uwu(pose)
+    if pose:
+        di_win.vi_talk(test_text[k])
+
+    pygame.display.flip()
+    clock.tick(fps)
 
 pygame.quit()
