@@ -209,10 +209,8 @@ violett = Player(x=25, y=320)
 all_sprites.add(violett)
 dialog_window = DialogWindow()
 
-test_text = ['Ебаный рот этого казино...',
-             '...блять!',
-             "Всё проиграл!"
-             "ВСЁЁЁ!!!"
+test_text = ['Как-то раз я невзначай',
+             'Сунул... а впрочем...',
              '']
 
 while running:
