@@ -65,14 +65,20 @@ if __name__ == '__main__':
         def __init__(self, *group):
             super().__init__(*group)
 
-            self.walk_right_gg = [pygame.image.load('sprites walk 1.png'), pygame.image.load('sprites walk 2.png'),
+            self.walk_right_gg = [pygame.image.load('sprites walk 1.png'),
+                                  pygame.image.load('sprites walk 2.png'), pygame.image.load('sprites walk 2-3.png'),
                                   pygame.image.load('sprites walk 3.png'), pygame.image.load('sprites walk 4.png'),
                                   pygame.image.load('sprites walk 5.png'), pygame.image.load('sprites walk 5.png'),
-                                  pygame.image.load('sprites walk 3.png'), pygame.image.load('sprites walk 2.png')]
+                                  pygame.image.load('sprites walk 4.png'), pygame.image.load('sprites walk 3.png'),
+                                  pygame.image.load('sprites walk 2-3.png'),
+                                  pygame.image.load('sprites walk 2.png')]
             self.walk_left_gg = [pygame.image.load('sp w left 1.png'), pygame.image.load('sp w left 2.png'),
-                                 pygame.image.load('sp w left 3.png'), pygame.image.load('sp w left 4.png'),
+                                 pygame.image.load('sp w left 2-3.png'), pygame.image.load('sp w left 3.png'),
+                                 pygame.image.load('sp w left 4.png'),
                                  pygame.image.load('sp w left 5.png'), pygame.image.load('sp w left 5.png'),
-                                 pygame.image.load('sp w left 3.png'), pygame.image.load('sp w left 2.png')]
+                                 pygame.image.load('sp w left 4.png'), pygame.image.load('sp w left 3.png'),
+                                 pygame.image.load('sp w left 2-3.png'),
+                                 pygame.image.load('sp w left 2.png')]
             self.stand = [pygame.image.load('stand 1.png'), pygame.image.load('stand 2.png'),
                           pygame.image.load('stand 3.png'), pygame.image.load('stand 4.png')]
             self.image = self.stand[0]
@@ -84,15 +90,15 @@ if __name__ == '__main__':
             if status == 'walk_right':
                 self.image = self.walk_right_gg[self.i]
                 self.i += 1
-                if self.i == 8:
+                if self.i == 11:
                     self.i = 0
-                clock.tick(12)
+                clock.tick(14)
             if status == 'walk_left':
                 self.image = self.walk_left_gg[self.i]
                 self.i += 1
-                if self.i == 8:
+                if self.i == 11:
                     self.i = 0
-                clock.tick(12)
+                clock.tick(14)
             if status == 'simple_stand':
                 self.image = self.stand[0]
             screen.blit(self.image, [pers_x, pers_y])
@@ -147,7 +153,7 @@ class Levels():
         screen.blit(self.background3, [0, 0])
 
 
-lv_li = [1, 2, 3]
+lv_li = 2
 all_sprites = pygame.sprite.Group()
 player = Violet()
 all_sprites.add(player)
@@ -175,12 +181,12 @@ while running:
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_e]:
                 pose = True
-            elif event.key in [pygame.K_0]:  #  свернуть и развернуть диалоговое окно
+            elif event.key in [pygame.K_0]:
                 pose = False
             if pose:
                 if event.key in [pygame.K_l] and k != len(test_text) - 1:
                     k += 1
-                elif event.key in [pygame.K_j] and k > 0:  #  переключение между диалогами
+                elif event.key in [pygame.K_j] and k > 0:
                     k -= 1
 
     keys = pygame.key.get_pressed()
@@ -196,7 +202,19 @@ while running:
     else:
         all_sprites.update('stand')
 
-    loc.lv2()
+    if pers_x < 25 and lv_li > 1:
+        lv_li -= 1
+        pers_x = 1100
+    elif pers_x > 1110 and lv_li < 3:
+        lv_li += 1
+        pers_x = 35
+
+    if lv_li == 1:
+        loc.lv1()
+    if lv_li == 2:
+        loc.lv2()
+    if lv_li == 3:
+        loc.lv3()
     screen.blit(player.image, [pers_x, pers_y])
     di_win.uwu(pose)
     if pose:
