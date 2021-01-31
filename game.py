@@ -151,25 +151,26 @@ class World:
         super().__init__(*group)
         self.background1 = pygame.image.load('backs0.png')
         self.background3 = pygame.image.load('backs 1.png')
-        self.background2 = pygame.image.load("background city 1.png").convert()
-        self.platform_im = pygame.image.load('platform 1.png').convert()
-        self.platform_im.set_colorkey(pygame.Color('white'))
-        self.platform_im2 = pygame.image.load('platform 2.png')
-        self.platform_im2.set_colorkey(pygame.Color('white'))
-
+        self.background2 = pygame.image.load("background city 1.png")
+        self.platform_im1 = pygame.image.load('plat1.png')
+        self.platform_im2_1 = pygame.image.load('plat2.png')
+        self.platform_im2_2 = pygame.image.load('plat2-2.png')
+        self.platform_im3 = pygame.image.load('plat3.png')
         self.prep = pygame.image.load('prep.png')
 
     def lv0(self):
         screen.blit(self.background1, [0, 0])
+        screen.blit(self.platform_im1, [0, 642])
         screen.blit(self.prep, [825, 484])
 
     def lv1(self):
         screen.blit(self.background2, [0, 0])
-        screen.blit(self.platform_im, [0, 0])
-        screen.blit(self.platform_im2, [300, 150])
+        screen.blit(self.platform_im2_1, [0, 660])
+        screen.blit(self.platform_im2_2, [1051, 430])
 
     def lv2(self):
         screen.blit(self.background3, [0, 0])
+        screen.blit(self.platform_im3, [0, 660])
 
 
 class Items:
