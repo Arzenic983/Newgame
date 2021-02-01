@@ -178,17 +178,21 @@ class World:
 
     def lv0(self):
         screen.blit(self.background1, [0, 0])
-        screen.blit(self.platform_im1, [0, 642])
+        # screen.blit(self.platform_im1, [0, 642]) - orig
+        # screen.blit(self.platform_im1, [1280, 0]) - phy..?
         screen.blit(self.prep, [825, 484])
 
     def lv1(self):
         screen.blit(self.background2, [0, 0])
-        screen.blit(self.platform_im2_1, [0, 660])
-        screen.blit(self.platform_im2_2, [1051, 430])
+        # screen.blit(self.platform_im2_1, [0, 660])
+        # screen.blit(self.platform_im2_1, [825, 0]) - phy
+        # screen.blit(self.platform_im2_2, [1051, 430])
+        # screen.blit(self.platform_im2_2, [1285, 609]) - phy
 
     def lv2(self):
         screen.blit(self.background3, [0, 0])
-        screen.blit(self.platform_im3, [0, 660])
+        # screen.blit(self.platform_im3, [0, 660])
+        # screen.blit(self.platform_im3, [1280, 0]) - phy
 
 
 class Items:
