@@ -23,29 +23,15 @@ if __name__ == '__main__':
 
 
     def start_screen():
-        intro_text = ["ЗАСТАВКА", "",
-                      "ТЕСТОВЫЙ ПРОБЕГ",
-                      "!№;:?*()_+,",
-                      "Для продолжения нажмите Enter"]
-
-        screen.fill((0, 0, 0))
-        font = pygame.font.Font(None, 30)
-        text_coord = 500
-        for line in intro_text:
-            string_rendered = font.render(line, True, pygame.Color('white'))
-            intro_rect = string_rendered.get_rect()
-            text_coord += 10
-            intro_rect.top = text_coord
-            intro_rect.x = 10
-            text_coord += intro_rect.height
-            screen.blit(string_rendered, intro_rect)
-
+        ent = pygame.image.load('ent.png')
+        screen.blit(ent, [0, 0])
         while True:
             for eevent in pygame.event.get():
                 if eevent.type == pygame.QUIT:
                     terminate()
                 elif eevent.type == pygame.KEYDOWN or \
                         eevent.type == pygame.MOUSEBUTTONDOWN:
+                    screen.fill((0, 0, 0))
                     return
             pygame.display.flip()
             clock.tick(fps)
@@ -70,6 +56,20 @@ class Player(pygame.sprite.Sprite):
         self.stand = [pygame.image.load('stand 1.png'), pygame.image.load('stand 2.png'),
                       pygame.image.load('stand 3.png'), pygame.image.load('stand 4.png'),
                       pygame.image.load('stand 3.png'), pygame.image.load('stand 2.png')]
+        self.jump_right = [pygame.image.load('sprites walk 3.png'), pygame.image.load('jump right 1.png'),
+                           pygame.image.load('jump right 2.png'), pygame.image.load('jump right 3.png'),
+                           pygame.image.load('jump right 4.png'), pygame.image.load('jump right 5.png'),
+                           pygame.image.load('jump right 6.png'), pygame.image.load('jump right 7.png'),
+                           pygame.image.load('jump right 8.png'), pygame.image.load('jump right 9.png'),
+                           pygame.image.load('jump right 10.png'), pygame.image.load('jump right 11.png'),
+                           pygame.image.load('sprites walk 3.png')]
+        self.jump_left = [pygame.image.load('sp w left 3.png'), pygame.image.load('jump left 1.png'),
+                          pygame.image.load('jump left 2.png'), pygame.image.load('jump left 3.png'),
+                          pygame.image.load('jump left 4.png'), pygame.image.load('jump left 5.png'),
+                          pygame.image.load('jump left 6.png'), pygame.image.load('jump left 7.png'),
+                          pygame.image.load('jump left 8.png'), pygame.image.load('jump left 9.png'),
+                          pygame.image.load('jump left 10.png'), pygame.image.load('jump left 11.png'),
+                          pygame.image.load('sp w left 3.png')]
         self.image = self.stand[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -84,6 +84,7 @@ class Player(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.jumped = False
+        self.index_up = 0
 
     def update(self):
         delta_x = 0
@@ -103,6 +104,23 @@ class Player(pygame.sprite.Sprite):
         else:
             self.step = 3
         # move & animate
+        if (key[pygame.K_d] and key[pygame.K_SPACE]) or (key[pygame.K_RIGHT] and key[pygame.K_SPACE]):
+            self.counter += 1
+            if self.counter > walk_cooldown:
+                self.counter = 0
+                self.index_up += 1
+                if self.index_up >= len(self.jump_right):
+                    self.index_up = 0
+                self.image = self.jump_right[self.index_up]
+        if (key[pygame.K_a] and key[pygame.K_SPACE]) or (key[pygame.K_LEFT] and key[pygame.K_SPACE]):
+            self.counter += 1
+            if self.counter > walk_cooldown:
+                self.counter = 0
+                self.index_up += 1
+                if self.index_up >= len(self.jump_left):
+                    self.index_up = 0
+                self.image = self.jump_left[self.index_up]
+
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
             delta_x += self.step
             self.counter += 1
@@ -131,6 +149,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.stand[self.i]
 
         # phys
+
         self.speed_y += 1
         if self.speed_y > 10:
             self.speed_y = 10
@@ -149,7 +168,6 @@ class Player(pygame.sprite.Sprite):
                     delta_y = platform.top - self.rect.bottom
 
         # update coordinates
-
 
         if self.rect.left < -130:
             self.rect.left = -130
