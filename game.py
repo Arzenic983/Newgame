@@ -11,7 +11,6 @@ replica_num = 0
 level_number = 0
 flag_dialog = 0
 
-
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Игра.екзе')
@@ -82,6 +81,8 @@ class Player(pygame.sprite.Sprite):
         self.speed_y = 0
         self.timer = 0
         self.step = 2.5
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.jumped = False
 
     def update(self):
@@ -90,7 +91,6 @@ class Player(pygame.sprite.Sprite):
         walk_cooldown = 6
         wait_cooldown = 15
 
-
         key = pygame.key.get_pressed()
         # jump
         if key[pygame.K_SPACE] and not self.jumped:
@@ -98,6 +98,10 @@ class Player(pygame.sprite.Sprite):
             self.jumped = True
         if not key[pygame.K_SPACE]:
             self.jumped = False
+        if self.jumped:
+            self.step = 10
+        else:
+            self.step = 3
         # move & animate
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
             delta_x += self.step
@@ -126,15 +130,26 @@ class Player(pygame.sprite.Sprite):
                     self.i = 0
                 self.image = self.stand[self.i]
 
-
         # phys
         self.speed_y += 1
         if self.speed_y > 10:
             self.speed_y = 10
         delta_y += self.speed_y
 
-        if self.rect.bottom > height - 70:
-            self.rect.bottom = height - 70
+        # collision check
+
+        for platform in level.platforms:
+            # ycoord check
+            if platform.colliderect(self.rect.x, self.rect.y + delta_y, self.width, self.height):
+                # underground check - jumping
+                if self.speed_y < 0:
+                    delta_y = platform.bottom - self.rect.top
+                # high ground check - falling
+                elif self.speed_y >= 0:
+                    delta_y = platform.top - self.rect.bottom
+
+        # update coordinates
+
 
         if self.rect.left < -130:
             self.rect.left = -130
@@ -144,6 +159,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += delta_y
 
         screen.blit(self.image, self.rect)
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
 
 class World:
@@ -157,6 +173,8 @@ class World:
         self.platform_im2_2 = pygame.image.load('plat2-2.png')
         self.platform_im3 = pygame.image.load('plat3.png')
         self.prep = pygame.image.load('prep.png')
+        self.platforms = [self.platform_im1.get_rect(), self.platform_im2_1.get_rect(),
+                          self.platform_im2_2.get_rect(), self.platform_im3.get_rect()]
 
     def lv0(self):
         screen.blit(self.background1, [0, 0])
